@@ -223,6 +223,10 @@ html.lenis, html.lenis body { height: auto; }
   .btn--outline:hover { background: var(--c-text); color: #fff; }
 }
 .btn--block { width: 100%; }
+/* very narrow phones: long labels wrap instead of pushing past the screen edge */
+@media (max-width: 400px) {
+  .btn { max-width: 100%; white-space: normal; text-align: center; line-height: 1.25; padding-block: 8px; }
+}
 .btn svg { width: calc(16px * var(--fs)); height: calc(16px * var(--fs)); flex: none; }
 
 .link {
@@ -500,14 +504,14 @@ html.lenis, html.lenis body { height: auto; }
 .fchip[aria-pressed="true"] { background: var(--c-text); border-color: var(--c-text); color: #fff; }
 
 /* ============ Product grid ============ */
-.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
-@media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px; } /* minmax(0): long names wrap instead of widening the columns */
+@media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .card { position: relative; display: flex; flex-direction: column; }
 .card-media { position: relative; }
 .card-media .ph--alt { position: absolute; inset: 0; opacity: 0; transition: opacity 300ms ease; }
 .card-body { padding: 14px 14px 22px; display: grid; gap: 4px; align-content: start; }
 @media (min-width: 1024px) { .card-body { padding: 16px 20px 28px; } }
-.card-name { font: 500 calc(14px * var(--fs))/1.4 var(--f-body); }
+.card-name { font: 500 calc(14px * var(--fs))/1.4 var(--f-body); overflow-wrap: break-word; }
 .card-link { text-align: left; font: inherit; }
 .card-link::after { content: ""; position: absolute; inset: 0; z-index: 2; }
 .card-link:focus-visible { outline: none; }
@@ -603,6 +607,8 @@ html.lenis, html.lenis body { height: auto; }
 
 /* ============ Образ тижня ============ */
 .look-grid { display: grid; gap: 36px; }
+/* grid items default to min-width:auto; without this the list's min-content widened the column past the screen */
+.look-grid > * { min-width: 0; }
 @media (min-width: 1024px) {
   .look-grid { grid-template-columns: 1fr 1fr; gap: clamp(40px, 5vw, 96px); align-items: start; }
   .look-stage { position: sticky; top: calc(60px + 24px); }
@@ -643,8 +649,15 @@ html.lenis, html.lenis body { height: auto; }
 @media (hover: hover) and (pointer: fine) { .look-thumb:hover::after { border-color: var(--c-accent); } }
 .look-list { margin-top: 36px; border-top: 1px solid var(--c-text); }
 .look-item {
-  position: relative; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px;
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px;
   border-bottom: 1px solid var(--c-line);
+}
+.look-name { overflow-wrap: break-word; min-width: 0; }
+/* small phones: the order button moves under the name, aligned with the text */
+@media (max-width: 479px) {
+  .look-item { grid-template-columns: minmax(0, 1fr); gap: 0; padding-bottom: 16px; }
+  .look-pick { padding-bottom: 10px; }
+  .look-order { justify-self: start; margin-left: 52px; }
 }
 .look-item::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--c-accent);
